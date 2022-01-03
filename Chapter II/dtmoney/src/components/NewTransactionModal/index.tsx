@@ -3,9 +3,8 @@ import Modal from "react-modal";
 import closeImg from '../../assets/close.svg';
 import incomeImg from '../../assets/income.svg'
 import outcomeImg from '../../assets/outcome.svg'
-import { api } from "../../services/api";
+import { useTransactions } from "../../hooks/useTransactions";
 import * as S from './styles'
-
 interface NewTransactionModalProps {
     isOpen: boolean;
     onRequestClose: () => void;
@@ -15,6 +14,8 @@ export function NewTransactionModal({
     isOpen,
     onRequestClose,
 }: NewTransactionModalProps) {
+    const { createTransaction } = useTransactions();
+
     const [title, setTitle] = useState('');
     const [amount, setAmount] = useState(0);
     const [category, setCategory] = useState('');
@@ -24,23 +25,20 @@ export function NewTransactionModal({
         event.preventDefault();
 
 
-        const data = {
+        await createTransaction({
             title,
             amount,
             category,
             type
-        }
+        })
 
-        // setTitle('');
-        // setAmount(0);
-        // setCategory('');
-        // setType('deposit');
+        setTitle('');
+        setAmount(0);
+        setCategory('');
+        setType('deposit');
 
-        // onRequestClose();
-
-        api.post('/transactions', data)
+        onRequestClose();
     }
-
 
     return (
         <Modal
